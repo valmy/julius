@@ -6,8 +6,8 @@ except ImportError:
 config = {
     'description': 'My Project',
     'author': 'T. Budiman',
-    'url': 'http://www.malaka9.com',
-    'download_url': 'http://www.malaka9.com',
+    'url': 'https://github.com/valmy/python-skeleton',
+    'download_url': 'https://github.com/valmy/python-skeleton/zipball/master',
     'author_email': 'tbudiman@gmail.com',
     'version': '0.1',
     'install_requires': ['nose'],
