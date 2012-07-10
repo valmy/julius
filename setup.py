@@ -4,16 +4,16 @@ except ImportError:
     from distutils.core import setup
 
 config = {
-    'description': 'My Project',
+    'description': 'Julius Swiss Pairing System',
     'author': 'T. Budiman',
-    'url': 'https://github.com/valmy/python-skeleton',
-    'download_url': 'https://github.com/valmy/python-skeleton/zipball/master',
+    'url': 'https://github.com/valmy/julius',
+    'download_url': 'https://github.com/valmy/julius/zipball/master',
     'author_email': 'tbudiman@gmail.com',
     'version': '0.1',
     'install_requires': ['nose'],
-    'packages': ['NAME'],
+    'packages': ['julius'],
     'scripts': [],
-    'name': 'projectname'
+    'name': 'julius'
 }
 
 setup(**config)
