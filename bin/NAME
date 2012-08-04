@@ -1,0 +1,73 @@
+#!/usr/bin/env python
+# -*- Mode: Python; coding: utf-8; indent-tabs-mode: nil; tab-width: 4 -*-
+
+# Copyright 2012 T. Budiman 
+#
+# This file is part of NAME
+#
+#This program is free software: you can redistribute it and/or modify it 
+#under the terms of the GNU General Public License version 3, as published 
+#by the Free Software Foundation.
+
+#This program is distributed in the hope that it will be useful, but 
+#WITHOUT ANY WARRANTY; without even the implied warranties of 
+#MERCHANTABILITY, SATISFACTORY QUALITY, or FITNESS FOR A PARTICULAR 
+#PURPOSE.  See the GNU General Public License for more details.
+
+#You should have received a copy of the GNU General Public License along 
+#with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+import os, re
+import sys
+import subprocess
+import gettext
+from gettext import gettext as _
+
+# add NAME root directory (enable symlink, and trunk execution)
+NAME_bin_directory = os.path.dirname(os.path.realpath(sys.argv[0]))
+NAME_root_directory_name = os.path.dirname(NAME_bin_directory)
+NAME_root_directory = os.path.abspath(NAME_root_directory_name)
+if os.path.exists(os.path.join(NAME_root_directory, 'NAME')) and NAME_root_directory not in sys.path:
+    sys.path.insert(0, NAME_root_directory)
+    os.putenv('PYTHONPATH', NAME_root_directory) # for subprocesses
+
+from NAME import commands, configurationhandler, NAMEconfig, tools, version
+
+gettext.textdomain('NAME')
+
+def main():
+    """Main command line processor
+
+    :return: exit code of NAME command.
+    """
+
+    (opt_command, opt_example) = tools.process_command_line(sys.argv[1:])
+    command_name = opt_command[0]
+
+    # try to get the example arguments from the configuration file (if not already provided by the -e option)
+    if not opt_example and configurationhandler.loadConfig(can_stop=False) == 0:
+        try:
+            opt_example = configurationhandler.project_config['example']
+        except KeyError:
+            pass
+
+    command = commands.get_command(command_name)
+    if not command:
+        tools.usage_error(_("No %s command found.") % command_name)
+
+    command_args = tools.check_for_followed_by_args(command, opt_command[1:])
+
+    return(command.launch(os.getcwd(), command_args))
+
+if __name__ == '__main__':
+
+    if len(sys.argv) == 1:
+        tools.usage()
+        sys.exit(1)
+
+    # process the command line to send the right instructions
+    if sys.argv[1] == 'shell-completion':
+        print(" ".join(tools.get_completion_in_context(sys.argv)))
+        exit(0)
+    else:
+        exit(main())
